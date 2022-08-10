@@ -21,7 +21,8 @@ window._import = path => {
 };
 
 // camunda-admin-bootstrap is copied as-is, so we have to inline everything
-const baseImportPath = document.querySelector('base').href;
+const appRoot = document.querySelector('base').getAttribute('app-root');
+const baseImportPath = `${appRoot}/app/admin/`;
 
 const loadConfig = (async function() {
   // eslint-disable-next-line
@@ -43,7 +44,7 @@ window.__define(
     'use strict';
     const bootstrap = function(config) {
 
-      var camundaAdminUi = window['camunda/app/admin/camunda-admin-ui'];
+      var camundaAdminUi = window['app/admin/camunda-admin-ui'];
 
       window.__requirejs.config({
         baseUrl: '../../../lib'
@@ -100,7 +101,7 @@ window.__define(
           packages: pluginPackages,
           baseUrl: './',
           paths: {
-            ngDefine: '../../lib/ngDefine'
+            ngDefine: `${appRoot}/lib/ngDefine`
           }
         });
 

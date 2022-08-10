@@ -21,7 +21,8 @@ window._import = path => {
 };
 
 // camunda-welcome-bootstrap is copied as-is, so we have to inline everything
-const baseImportPath = document.querySelector('base').href;
+const appRoot = document.querySelector('base').getAttribute('app-root');
+const baseImportPath = `${appRoot}/app/welcome/`;
 
 const loadConfig = (async function() {
   // eslint-disable-next-line
@@ -43,7 +44,7 @@ window.__define(
     'use strict';
 
     const bootstrap = config => {
-      var camundaWelcomeUi = window['camunda/app/welcome/camunda-welcome-ui'];
+      var camundaWelcomeUi = window['app/welcome/camunda-welcome-ui'];
 
       window.__requirejs.config({
         baseUrl: '../../../lib'
@@ -94,7 +95,7 @@ window.__define(
           packages: pluginPackages,
           baseUrl: './',
           paths: {
-            ngDefine: '../../lib/ngDefine'
+            ngDefine: `${appRoot}/lib/ngDefine`
           }
         });
 

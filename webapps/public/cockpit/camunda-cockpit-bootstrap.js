@@ -21,7 +21,8 @@ window._import = path => {
 };
 
 //  Camunda-Cockpit-Bootstrap is copied as-is, so we have to inline everything
-const baseImportPath = document.querySelector('base').href;
+const appRoot = document.querySelector('base').getAttribute('app-root');
+const baseImportPath = `${appRoot}/app/cockpit/`;
 
 function withSuffix(string, suffix) {
   return !string.endsWith(suffix) ? string + suffix : string;
@@ -52,7 +53,7 @@ window.__define(
     const bootstrap = function(config) {
       'use strict';
 
-      var camundaCockpitUi = window['camunda/app/cockpit/camunda-cockpit-ui'];
+      var camundaCockpitUi = window['app/cockpit/camunda-cockpit-ui'];
 
       window.__requirejs.config({
         baseUrl: '../../lib'
@@ -117,7 +118,7 @@ window.__define(
           packages: pluginPackages,
           baseUrl: './',
           paths: {
-            ngDefine: '../../lib/ngDefine'
+            ngDefine: `${appRoot}/lib/ngDefine`
           }
         });
 
