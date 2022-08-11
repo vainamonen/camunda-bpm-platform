@@ -18,15 +18,11 @@
 'use strict';
 var fs = require('fs');
 
-var angular = require('../../../../camunda-bpm-sdk-js/vendor/angular'),
-  template = fs.readFileSync(
-    __dirname + '/cam-widget-selection-type.html',
-    'utf8'
-  );
+var template = require('./cam-widget-selection-type.html');
 
 module.exports = function() {
   return {
-    template: template,
+    template,
     scope: {
       selectedInstancesCount: '@',
       totalInstancesCount: '@',
