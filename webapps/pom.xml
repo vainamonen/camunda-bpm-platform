@@ -996,6 +996,7 @@
                     </exec>
                     <exec executable="cmd" failonerror="true">
                       <arg value="/c" />
+                      <env key="NODE_ENV" value="production"/>
                       <arg value="npm" />
                       <arg value="run" />
                       <arg value="build" />
@@ -1041,6 +1042,7 @@
                       <arg value="install" />
                     </exec>
                     <exec executable="npm" failonerror="true">
+                      <env key="NODE_ENV" value="production"/>
                       <arg value="run" />
                       <arg value="build" />
                     </exec>
