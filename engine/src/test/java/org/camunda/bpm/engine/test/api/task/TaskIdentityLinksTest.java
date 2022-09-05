@@ -16,20 +16,29 @@
  */
 package org.camunda.bpm.engine.test.api.task;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
+import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.camunda.bpm.engine.task.Event;
 import org.camunda.bpm.engine.task.IdentityLink;
 import org.camunda.bpm.engine.task.IdentityLinkType;
 import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
+import org.camunda.bpm.engine.test.bpmn.tasklistener.util.GetIdentityLinksTaskListener;
 import org.camunda.bpm.engine.test.util.PluggableProcessEngineTest;
+import org.camunda.bpm.model.bpmn.Bpmn;
+import org.camunda.bpm.model.bpmn.BpmnModelInstance;
+import org.camunda.commons.testing.ProcessEngineLoggingRule;
+import org.junit.Rule;
 import org.junit.Test;
+
+import ch.qos.logback.classic.Level;
 
 
 
@@ -39,6 +48,9 @@ import org.junit.Test;
  * @author Falko Menge
  */
 public class TaskIdentityLinksTest extends PluggableProcessEngineTest {
+
+  @Rule
+  public ProcessEngineLoggingRule loggingRule = new ProcessEngineLoggingRule().level(Level.ERROR);
 
   @Deployment(resources="org/camunda/bpm/engine/test/api/task/IdentityLinksProcess.bpmn20.xml")
   @Test
@@ -253,4 +265,61 @@ public class TaskIdentityLinksTest extends PluggableProcessEngineTest {
     taskService.deleteTask(task.getId(), true);
   }
 
+  @Test
+  public void testAssigneeGetIdentityLinksInCompleteListener() {
+    // given
+    BpmnModelInstance model = Bpmn.createExecutableProcess("process")
+                                          .startEvent()
+                                          .userTask("task1")
+                                          .camundaTaskListenerClass(TaskListener.EVENTNAME_COMPLETE, GetIdentityLinksTaskListener.class.getName())
+                                          .userTask("task2")
+                                          .endEvent()
+                                          .done();
+
+    testRule.deploy(model);
+    String processInstanceId = runtimeService.startProcessInstanceByKey("process").getId();
+
+    Task task = taskService.createTaskQuery().singleResult();
+    String taskId = task.getId();
+    // create identity links
+    task.setAssignee("elmo");
+    taskService.saveTask(task);
+    taskService.addUserIdentityLink(taskId, "kermit", "interestee");
+
+    // when
+    taskService.complete(taskId);
+
+    // then no NPE is thrown and there were 2 identity links during the listener execution
+    assertThat(loggingRule.getLog()).isEmpty();
+    assertEquals(2, runtimeService.getVariable(processInstanceId, "identityLinksSize"));
+  }
+
+  @Test
+  public void testOwnerGetIdentityLinksInCompleteListener() {
+    // given
+    BpmnModelInstance model = Bpmn.createExecutableProcess("process")
+                                          .startEvent()
+                                          .userTask("task1")
+                                          .camundaTaskListenerClass(TaskListener.EVENTNAME_COMPLETE, GetIdentityLinksTaskListener.class.getName())
+                                          .userTask("task2")
+                                          .endEvent()
+                                          .done();
+
+    testRule.deploy(model);
+    String processInstanceId = runtimeService.startProcessInstanceByKey("process").getId();
+
+    Task task = taskService.createTaskQuery().singleResult();
+    String taskId = task.getId();
+    // create identity links
+    task.setOwner("gonzo");
+    taskService.saveTask(task);
+    taskService.addUserIdentityLink(taskId, "kermit", "interestee");
+
+    // when
+    taskService.complete(taskId);
+
+    // then no NPE is thrown and there were 2 identity links during the listener execution
+    assertThat(loggingRule.getLog()).isEmpty();
+    assertEquals(2, runtimeService.getVariable(processInstanceId, "identityLinksSize"));
+  }
 }

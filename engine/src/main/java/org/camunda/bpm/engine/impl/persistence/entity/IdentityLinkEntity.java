@@ -257,4 +257,26 @@ public class IdentityLinkEntity implements Serializable, IdentityLink, DbEntity,
            + ", tenantId=" + tenantId
            + "]";
   }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#clone()
+   */
+  public IdentityLinkEntity clone() {
+    IdentityLinkEntity copy = new IdentityLinkEntity();
+
+    copy.setId(this.getId());
+    copy.setType(this.getType());
+    copy.setUserId(this.getUserId());
+    copy.setGroupId(this.getGroupId());
+    copy.setTaskId(this.taskId);
+    copy.setProcessDefId(this.getProcessDefId());
+    copy.setTenantId(this.getTenantId());
+    copy.setTask(this.getTask());
+    ProcessDefinitionEntity processDef = this.getProcessDef();
+    if (processDef != null) {
+      copy.setProcessDef(processDef);
+    }
+
+    return copy;
+  }
 }
