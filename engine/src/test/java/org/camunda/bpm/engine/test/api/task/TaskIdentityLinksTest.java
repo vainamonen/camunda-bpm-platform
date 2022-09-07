@@ -269,12 +269,12 @@ public class TaskIdentityLinksTest extends PluggableProcessEngineTest {
   public void testAssigneeGetIdentityLinksInCompleteListener() {
     // given
     BpmnModelInstance model = Bpmn.createExecutableProcess("process")
-                                          .startEvent()
-                                          .userTask("task1")
-                                          .camundaTaskListenerClass(TaskListener.EVENTNAME_COMPLETE, GetIdentityLinksTaskListener.class.getName())
-                                          .userTask("task2")
-                                          .endEvent()
-                                          .done();
+      .startEvent()
+      .userTask("task1")
+      .camundaTaskListenerClass(TaskListener.EVENTNAME_COMPLETE, GetIdentityLinksTaskListener.class.getName())
+      .userTask("task2")
+      .endEvent()
+      .done();
 
     testRule.deploy(model);
     String processInstanceId = runtimeService.startProcessInstanceByKey("process").getId();
@@ -298,12 +298,12 @@ public class TaskIdentityLinksTest extends PluggableProcessEngineTest {
   public void testOwnerGetIdentityLinksInCompleteListener() {
     // given
     BpmnModelInstance model = Bpmn.createExecutableProcess("process")
-                                          .startEvent()
-                                          .userTask("task1")
-                                          .camundaTaskListenerClass(TaskListener.EVENTNAME_COMPLETE, GetIdentityLinksTaskListener.class.getName())
-                                          .userTask("task2")
-                                          .endEvent()
-                                          .done();
+      .startEvent()
+      .userTask("task1")
+      .camundaTaskListenerClass(TaskListener.EVENTNAME_COMPLETE, GetIdentityLinksTaskListener.class.getName())
+      .userTask("task2")
+      .endEvent()
+      .done();
 
     testRule.deploy(model);
     String processInstanceId = runtimeService.startProcessInstanceByKey("process").getId();
